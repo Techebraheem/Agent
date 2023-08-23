@@ -1,0 +1,37 @@
+version: '3'
+services:
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: always
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: "minio"
+      MINIO_SECRET_KEY: "minio123"
+    volumes:
+      - minio_data:/data
+    command: server /data
+    restart: always
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_config:/etc/loki
+      - loki_data:/tmp/loki
+    command: -config.file=/etc/loki/config.yml
+    restart: always
+
+volumes:
+  grafana_data:
+  minio_data:
+  loki_config:
+  loki_data:
